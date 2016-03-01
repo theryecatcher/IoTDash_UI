@@ -42,6 +42,11 @@ define(['angular', 'angular-ui-router'], function(angular) {
             .state('blanksubpage', {
                 url: '/blanksubpage',
                 templateUrl: 'views/blank-sub-page.html'
+            })
+            .state('live-data', {
+                parent: 'secure',
+                url: '/live-data',
+                templateUrl: 'views/live-data.html'
             });
 
 

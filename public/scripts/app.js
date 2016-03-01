@@ -42,7 +42,8 @@ define([
                 {icon: 'fa-tachometer', state: 'dashboards', label: 'Dashboards'},
                 {icon: 'fa-file-o', state: 'blankpage', label: 'Blank Page', subitems: [
                     {state: 'blanksubpage', label: 'Blank Sub Page'}
-                ]}
+                ]},
+                {icon: 'fa-line-chart', state: 'live-data', label: 'Live Data'}
             ]
         };
 
