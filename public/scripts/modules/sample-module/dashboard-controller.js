@@ -28,7 +28,7 @@ define(['angular', './sample-module'], function (angular, controllers) {
             var newContext = angular.copy(contextDetails);
             newContext.children = [];
             newContext.parent = [];
-
+ 
             // url end point can change from context to context
             // so the same card can display different data from different contexts
 
