@@ -1,0 +1,31 @@
+<px-deck>
+	<px-card header-text="Plant Data">
+		<px-chart id="infyDashtsChart" height="500" legend='{"y": 25, "floating": false, "enabled": true, "useHTML": true, "verticalAlign": "top", "align": "left", "layout": "vertical", "itemStyle": {"fontSize": "inherit", "fontWeight": "normal"}}' tooltip-type="condensed" series-events-width="1">
+            <px-chart-controls id="infyDashtsChartControls" data-controls show-date-range="true" display-options='{ "displayType": "normal","submitButtonText": "Update", "submitButtonIcon": "icon-arrow-right" }'></px-chart-controls>
+            <px-chart-yaxis id="axis0" offset="0"></px-chart-yaxis>
+            <px-chart-series-line id="Line1" name="Line 1"></px-chart-series-line>
+            <px-chart-series-line id="Line2" name="Line 2"></px-chart-series-line>
+          </px-chart>
+	</px-card>
+</px-deck>
+
+<script type="text/javascript">
+
+	var xmlhttp = new XMLHttpRequest();
+	var url = "/api/v1/datapoints";
+	var str = '{"start":1454284800000,"tags":[{"name":["Tst2","Tst3"]}]}';
+
+	xmlhttp.onreadystatechange = function() {
+	    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+	    	var myArr = JSON.parse(xmlhttp.responseText);
+	    	console.log(xmlhttp.responseText);
+	        
+	        document.getElementById("Line1").data = myArr.tags[0].results[0].values;
+	        document.getElementById("Line2").data = myArr.tags[1].results[0].values;
+	    }
+	};
+	xmlhttp.open("POST", url, true);
+	xmlhttp.send(str);
+
+</script>
+

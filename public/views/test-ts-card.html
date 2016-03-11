@@ -1,0 +1,125 @@
+<link rel="import" href="../bower_components/polymer/polymer.html"/>
+<link rel="import" href="../bower_components/px-card/px-card.html"/>
+<link rel="import" href="../bower_components/px-chart/px-chart.html"/>
+
+<script src="../bower_components/moment/min/moment.min.js"></script>
+
+<dom-module id="test-ts-card">
+  <link rel="import" type="css" href="../views/css/test-seed.css"/>
+  <template>
+    <!-- {{context.name}} -->
+    <px-card header-text="Plant Data">
+      <br/>
+      <div class="layout layout--full">
+        <div class="layout__item">
+          <!-- set custom legend properties here, so it appears below the date picker controls. -->
+          <px-chart id="infyDashtsChart" height="500" legend='{"y": 25, "floating": false, "enabled": true, "useHTML": true, "verticalAlign": "top", "align": "left", "layout": "vertical", "itemStyle": {"fontSize": "inherit", "fontWeight": "normal"}}' chart-state="{{chartState}}" tooltip-type="condensed" series-events-width="1">
+            <px-chart-controls id="infyDashtsChartControls" data-controls show-date-range="true" display-options='{ "displayType": "normal","submitButtonText": "Update", "submitButtonIcon": "icon-arrow-right" }'></px-chart-controls>
+            <px-chart-yaxis id="axis0" offset="0"></px-chart-yaxis>
+          </px-chart>
+        </div>
+      </div>
+    </px-card>
+  </template>
+</dom-module>
+
+<script>
+Polymer({
+  is: 'test-ts-card',
+  properties: {
+    allParams: Array,
+    defaultWeeks: {
+      type: Number,
+      value: 1
+    }
+  },
+
+  observers: ['getTimeSeriesData()', 'chartStateChanged(chartState)'],
+
+  ready: function() {
+    // bit of a hack here, to set the default range, and make sure the controls match the query.
+    // couldn't find any other way to set the default range.
+    // (We need to store chart Min/Max Date here, so we can build the time-series query.)
+    var from = moment().subtract(this.defaultWeeks, 'week'),
+    to = moment();
+    this.chartMinDate = from.valueOf();
+    this.chartMaxDate = to.valueOf();
+    this.$.infyDashtsChartControls.set('rangeMs', {
+      from: from.format('x'),
+      to: to.format('x')
+    });
+  },
+
+  getTimeSeriesData: function() {
+    var self = this,
+    jsonString = [{"sensorName":"Humidity", "label":"humidity"},{"sensorName":"Temperature", "label":"temperature"}],
+    // selected = JSON.parse(selectedParams),
+    selected = JSON.parse(jsonString),
+    chart = self.$.infyDashtsChart;
+
+    this.updateDeck({
+      liveParam: selected[0]
+    });
+
+    px.dealer.httpRequest({
+      url: '/api/v1/datapoints',
+      method: 'POST',
+      data: this.buildQuery(selected)
+    }).then(function(data){
+
+      console.log("GOT DATA: " + JSON.stringify(data));
+
+      for (var i=0; i<data.tags.length; i++) {
+        var tag = data.tags[i];
+        var series = {
+          id: tag.name,
+          axisId: 'axis0',  // possibly add more yAxes here?
+          data: tag.results[0].values,
+          name: tag.name
+        }
+        selected.forEach(function(s) {
+          if (series.name === s.label) {
+            series.color = chart.dataVisColors[chart.seriesColorOrder[s.colorIndex]];
+          }
+        })
+        chart.addSeries(series);
+      };
+    });
+  },
+
+  buildQuery: function(tags) {
+    var self = this;
+    var query = {
+      "cache_time": 0,
+      "tags": []
+    };
+    if (this.chartMinDate && this.chartMaxDate) {
+      query.start = this.chartMinDate;
+      query.end = this.chartMaxDate;
+    } else {
+      query.start = "1w-ago";
+    }
+    tags.forEach(function(tag) {
+      console.log("Query Pushed: " + tag.sensorName);
+      query.tags.push({
+        "name": tag.sensorName,
+      });
+    });
+    console.log("Generated Query tag: " + query);
+    return query;
+  },
+
+  chartStateChanged: function(newChartState) {
+    if (newChartState.chartZoom && newChartState.chartZoom.min && newChartState.chartZoom.max) {
+      // console.log("chartStateChanged: " + JSON.stringify(newChartState.chartZoom));
+      if (this.chartMinDate != newChartState.chartZoom.min || this.chartMaxDate != newChartState.chartZoom.max) {
+        this.chartMinDate = newChartState.chartZoom.min;
+        this.chartMaxDate = newChartState.chartZoom.max;
+        this.getTimeSeriesData();
+      }
+    }
+  },
+
+  behaviors: [px.card]
+});
+</script>

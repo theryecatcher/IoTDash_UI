@@ -1,6 +1,6 @@
 ---
 applications:
-  - name: dash-seed-test-app
+  - name: dash-seed-test-app2
     buildpack: predix_openresty_buildpack
     path: dist
     memory: 64M
@@ -13,6 +13,6 @@ applications:
             # - asset_instance # change to your assent instance name (Not required as of now)
     env:
       UAA_SERVER_URL: https://e328b0d1-222e-43bf-b795-c5d0f687b3b8.predix-uaa.run.aws-usw02-pr.ice.predix.io # change to your UAA instance url
-      REDIS: redis-2
-      timeSeriesUrl: https://time-series-store-predix.run.aws-usw02-pr.ice.predix.io
-      timeSeriesZoneId: 752e4b6a-b31b-452c-9bd0-c80a9c39caf6
+      REDIS: redis-2 # change to your REDIS instance name
+      timeSeriesUrl: https://time-series-store-predix.run.aws-usw02-pr.ice.predix.io # change to your Time Series URL
+      timeSeriesZoneId: 752e4b6a-b31b-452c-9bd0-c80a9c39caf6 # change to your Time Series Zone Id

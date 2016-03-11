@@ -43,10 +43,10 @@ define(['angular', 'angular-ui-router'], function(angular) {
                 url: '/blanksubpage',
                 templateUrl: 'views/blank-sub-page.html'
             })
-            .state('live-data', {
+            .state('plant-card', {
                 parent: 'secure',
-                url: '/live-data',
-                templateUrl: 'views/live-data.html'
+                url: '/plant-card',
+                templateUrl: 'views/plant-card.html'
             });
 
 

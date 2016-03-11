@@ -1,20 +1,19 @@
-<link rel="import" href="../polymer/polymer.html"/>
-<link rel="import" href="../px-card/px-card.html"/>
-<link rel="import" href="../px-chart/px-chart.html"/>
-<link rel="import" href="../ref-list-picker/ref-list-picker.html"/>
+<link rel="import" href="../bower_components/polymer/polymer.html"/>
+<link rel="import" href="../bower_components/px-card/px-card.html"/>
+<link rel="import" href="../bower_components/px-chart/px-chart.html"/>
+<!-- <link rel="import" href="../ref-list-picker/ref-list-picker.html"/> -->
 
-<script src="../moment/min/moment.min.js"></script>
+<script src="../bower_components/moment/min/moment.min.js"></script>
 
-<dom-module id="infy-seed-ts-card">
-  <link rel="import" type="css" href="css/rmd-ref-app-cards.css"/>
+<dom-module id="seed-test-ts-card">
   <template>
     <!-- {{context.name}} -->
-    <px-card header-text="Parameter Comparison">
+    <px-card header-text="Plant Data">
       <br/>
       <div class="layout layout--full">
-        <div class="layout__item u-1/6">
+        <!-- <div class="layout__item u-1/6">
           <ref-list-picker id="tsParams" key-field="meterUri" selected-options="{{selectedParams}}" multi></ref-list-picker>
-        </div>
+        </div> -->
         <div class="layout__item">
           <!-- set custom legend properties here, so it appears below the date picker controls. -->
           <px-chart id="tsChart" height="500" legend='{"y": 25, "floating": false, "enabled": true, "useHTML": true, "verticalAlign": "top", "align": "left", "layout": "vertical", "itemStyle": {"fontSize": "inherit", "fontWeight": "normal"}}' chart-state="{{chartState}}" tooltip-type="condensed" series-events-width="1">
@@ -29,7 +28,7 @@
 <script>
 
   Polymer({
-    is: 'infy-seed-ts-card',
+    is: 'seed-test-ts-card',
 
     properties: {
       allParams: Array,
@@ -40,11 +39,11 @@
 
     },
 
-    observers: ['getTimeSeriesData(selectedParams)', 'chartStateChanged(chartState)'],
+    observers: ['getTimeSeriesData()', 'chartStateChanged(chartState)'],
 
     ready: function() {
       // bit of a hack here, to set the default range, and make sure the controls match the query.
-      //  couldn't find any other way to set the default range.
+      // couldn't find any other way to set the default range.
       // (We need to store chart Min/Max Date here, so we can build the time-series query.)
       var from = moment().subtract(this.defaultWeeks, 'week'),
           to = moment();
@@ -56,10 +55,12 @@
       });
     },
 
-    getTimeSeriesData: function(selectedParams) {
-      console.log('getTimeSeriesData() called. ' + selectedParams);
+    getTimeSeriesData: function() {
+      // console.log('getTimeSeriesData() called. ' + selectedParams);
       var self = this,
-          selected = JSON.parse(selectedParams),
+          jsonString = [{"sensorName":"Humidity"},{"sensorName":"Temperature"}],
+          // selected = JSON.parse(selectedParams),
+          selected = JSON.parse(jsonString),
           chart = self.$.tsChart;
 
       this.updateDeck({
@@ -71,31 +72,31 @@
         method: 'POST',
         data: this.buildQuery(selected)
       }).then(function(data){
-        // console.log("GOT DATA: " + JSON.stringify(data));
+        console.log("GOT DATA: " + JSON.stringify(data));
         // remove series that are not selected.
-        self.allParams.forEach(function (series) {
-          var alreadyDisplayed = false;
-          for(var j=0; j<selected.length; j++) {
-            if (series.label === selected[j].label) {
-              alreadyDisplayed = true;
-              // console.log('MATCH!!');
-              break;
-            }
-          };
-          if (!alreadyDisplayed && self.$.tsChart.hasSeries(series.label)) {
-            chart.removeSeries(series.label);
-          }
-        });
+        // self.allParams.forEach(function (series) {
+        //   var alreadyDisplayed = false;
+        //   for(var j=0; j<selected.length; j++) {
+        //     if (series.label === selected[j].label) {
+        //       alreadyDisplayed = true;
+        //       console.log('Already Displayed!!');
+        //       break;
+        //     }
+        //   };
+        //   if (!alreadyDisplayed && self.$.tsChart.hasSeries(series.label)) {
+        //     chart.removeSeries(series.label);
+        //   }
+        // });
         // could potentially add thresholds too...
         // firstSeries.upperThreshold = "30.5";
         // firstSeries.lowerThreshold = "6.25";
         for (var i=0; i<data.tags.length; i++) {
           var tag = data.tags[i];
           var series = {
-            id: self.getLabelForTag(self.allParams, tag.name),
+            id: tag.name,
             axisId: 'axis0',  // possibly add more yAxes here?
             data: tag.results[0].values,
-            name: self.getLabelForTag(self.allParams, tag.name)
+            name: tag.name
           }
           selected.forEach(function(s) {
             if (series.name === s.label) {
@@ -107,15 +108,15 @@
       });
     },
 
-    getLabelForTag: function(allParams, tag) {
-      for (var i = 0; i < allParams.length ; i++) {
-        var param = allParams[i];
-        if (param.sourceTagId === tag) {
-          return param.label;
-        }
-      };
-      console.log("WARNING - no label found for tag: " + tag);
-    },
+    // getLabelForTag: function(allParams, tag) {
+    //   for (var i = 0; i < allParams.length ; i++) {
+    //     var param = allParams[i];
+    //     if (param.sourceTagId === tag) {
+    //       return param.label;
+    //     }
+    //   };
+    //   console.log("WARNING - no label found for tag: " + tag);
+    // },
 
     buildQuery: function(tags) {
       var self = this;
@@ -131,18 +132,21 @@
       }
       tags.forEach(function(tag) {
         query.tags.push({
-          "name": tag.sourceTagId,
-          "aggregations": [
-            {
-              "type": "avg",
-              "sampling": {
-                "unit": "s",
-                "value": "30"
-              }
-            }
-          ]
+          // "name": tag.sourceTagId,
+          console.log("Query Pushed: " + tag.sensorName);
+          "name": tag.sensorName,
+          // "aggregations": [
+          //   {
+          //     "type": "avg",
+          //     "sampling": {
+          //       "unit": "s",
+          //       "value": "30"
+          //     }
+          //   }
+          // ]
         });
       });
+      console.log("Generated Query tag: " + query);
       return query;
     },
 
@@ -150,37 +154,37 @@
     contextChanged: function(newContext) {
       // console.log('contextChanged: ' + JSON.stringify(newContext));
       var self = this;
-      self.allParams = newContext.pickerOptions;
+      // self.allParams = newContext.pickerOptions;
 
       // Set a color index, so colors in the picker and chart will match:
-      for (var i=0; i<self.allParams.length; i++) {
-        self.allParams[i].colorIndex = i % 9;
-      };
+      // for (var i=0; i<self.allParams.length; i++) {
+      //   self.allParams[i].colorIndex = i % 9;
+      // };
 
-      self.$.tsParams.pickerOptions = self.allParams;
+      // self.$.tsParams.pickerOptions = self.allParams;
 
-      if (!this.selectedParams || this.selectedParams.length < 1) {
-        self.$.tsParams.defaultOption = this.allParams[0];
-      }
+      // if (!this.selectedParams || this.selectedParams.length < 1) {
+      //   self.$.tsParams.defaultOption = this.allParams[0];
+      // }
     },
 
-    deckStateChanged: function(newState, oldState) {
-      // console.log(JSON.stringify(newState));
-      // console.log('time series card - showLiveData: ' + newState.showLiveData);
-      if (newState.showLiveData) {
-        this.hideCard();
-      } else {
-        this.showCard();
-      }
-    },
-    
+    // deckStateChanged: function(newState, oldState) {
+    //   // console.log(JSON.stringify(newState));
+    //   // console.log('time series card - showLiveData: ' + newState.showLiveData);
+    //   if (newState.showLiveData) {
+    //     this.hideCard();
+    //   } else {
+    //     this.showCard();
+    //   }
+    // },
+
     chartStateChanged: function(newChartState) {
       if (newChartState.chartZoom && newChartState.chartZoom.min && newChartState.chartZoom.max) {
         // console.log("chartStateChanged: " + JSON.stringify(newChartState.chartZoom));
         if (this.chartMinDate != newChartState.chartZoom.min || this.chartMaxDate != newChartState.chartZoom.max) {
           this.chartMinDate = newChartState.chartZoom.min;
           this.chartMaxDate = newChartState.chartZoom.max;
-          this.getTimeSeriesData(this.selectedParams);
+          this.getTimeSeriesData();
         }
       }
 

@@ -9,10 +9,10 @@ var config = {
    * Please update the following uaa configuration for your solution
    */
   uaa: {
-    clientId: 'predix-seed',
-    serverUrl: 'https://etc.predix-uaa-staging.grc-apps.svc.ice.ge.com',
+    clientId: 'infyOAuth',
+    serverUrl: 'https://e328b0d1-222e-43bf-b795-c5d0f687b3b8.predix-uaa.run.aws-usw02-pr.ice.predix.io',
     defaultClientRoute: '/about',
-    base64ClientCredential: 'cHJlZGl4LXNlZWQ6TTBhVzdrTmZRRndyTTZ3ZHJpV2h3bVc2ck1HQ045Q0x1cnI5VnI3elc0cz0='
+    base64ClientCredential: 'aW5meU9BdXRoOnBhc3N3b3Jk'
   },
   /**
    * --------- ADD YOUR SECURE ROUTES HERE ------------

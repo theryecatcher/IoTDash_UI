@@ -43,7 +43,7 @@ define([
                 // {icon: 'fa-file-o', state: 'blankpage', label: 'Blank Page', subitems: [
                 //     {state: 'blanksubpage', label: 'Blank Sub Page'}
                 // ]},
-                {icon: 'fa-line-chart', state: 'live-data', label: 'Live Data'}
+                {icon: 'fa-line-chart', state: 'plant-card', label: 'Plant Data'}
             ]
         };
 
