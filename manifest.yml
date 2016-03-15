@@ -1,6 +1,6 @@
 ---
 applications:
-  - name: dash-seed-test-app2
+  - name: dash-seed-test-app3
     buildpack: predix_openresty_buildpack
     path: dist
     memory: 64M

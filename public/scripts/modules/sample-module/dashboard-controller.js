@@ -37,16 +37,25 @@ define(['angular', './sample-module'], function (angular, controllers) {
                     'datagrid-data': '/sample-data/datagrid-data.json'
                 },
                 'child': {
-                    'core-vibe-rear-cruise': '/sample-data/core-vibe-rear-cruise.json',
-                    'delta-egt-cruise': '/sample-data/delta-egt-cruise.json'
+                    'R001-Startup': '{"start":1454284800000,"tags":[{"name":["Tst2"]}]}',
+                    'R002-Thread': '{"start":1454284800000,"tags":[{"name":["Tst3"]}]}',
+                    'R006-Continuous-Manual-Reject': '{"start":1454284800000,"tags":[{"name":["Tst4"]}]}',
+                    'R008-VISEEL-CC2-Blu-Registration': '{"start":1454284800000,"tags":[{"name":["Tst5"]}]}',
+                    'R033-VISBE1-BE-Ribbon-Position-DS': '{"start":1454284800000,"tags":[{"name":["Tst6"]}]}'
                 },
                 'child2': {
-                    'core-vibe-rear-cruise': '/sample-data/core-vibe-rear-cruise0.json',
-                    'delta-egt-cruise': '/sample-data/delta-egt-cruise.json'
+                    'R001-Startup': '{"start":1454284800000,"tags":[{"name":["Tst2"]}]}',
+                    'R002-Thread': '{"start":1454284800000,"tags":[{"name":["Tst3"]}]}',
+                    'R006-Continuous-Manual-Reject': '{"start":1454284800000,"tags":[{"name":["Tst4"]}]}',
+                    'R008-VISEEL-CC2-Blu-Registration': '{"start":1454284800000,"tags":[{"name":["Tst5"]}]}',
+                    'R033-VISBE1-BE-Ribbon-Position-DS': '{"start":1454284800000,"tags":[{"name":["Tst6"]}]}'
                 },
                 'child3': {
-                    'core-vibe-rear-cruise': '/sample-data/core-vibe-rear-cruise1.json',
-                    'delta-egt-cruise': '/sample-data/delta-egt-cruise.json'
+                    'R001-Startup': '{"start":1454284800000,"tags":[{"name":["Tst2"]}]}',
+                    'R002-Thread': '{"start":1454284800000,"tags":[{"name":["Tst3"]}]}',
+                    'R006-Continuous-Manual-Reject': '{"start":1454284800000,"tags":[{"name":["Tst4"]}]}',
+                    'R008-VISEEL-CC2-Blu-Registration': '{"start":1454284800000,"tags":[{"name":["Tst5"]}]}',
+                    'R033-VISBE1-BE-Ribbon-Position-DS': '{"start":1454284800000,"tags":[{"name":["Tst6"]}]}'
                 }
             };
 

@@ -1,0 +1,188 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../px-card/px-card.html"/>
+<link rel="import" href="../px-chart/px-chart.html"/>
+<script type="text/javascript" src="../px/dist/px.min.js"></script>
+
+<dom-module id="time-series-card">
+  <template>
+    <px-card header-text="{{context.name}}">
+      <!--<button on-click="saveBtnClicked">Save</button>-->
+      <!-- <px-chart id="tsChart">
+        <px-chart-controls data-controls show-refresh="true" show-date-range="true"></px-chart-controls>
+        <px-chart-yaxis id="firstAxis" offset="0"></px-chart-yaxis>
+        <px-chart-yaxis id="anotherAxis" opposite="true" offset="-2.5"></px-chart-yaxis>
+      </px-chart> -->
+      <px-chart id="tsChart" height="500" legend='{"y": 0, "floating": false, "enabled": true, "useHTML": true, "verticalAlign": "top", "align": "left", "layout": "vertical", "itemStyle": {"fontSize": "inherit", "fontWeight": "normal"}}' chart-state="{{chartState}}" series-events-width="1">
+        <px-chart-controls id="tsChartControls" data-controls show-date-range="true" display-options='{ "displayType": "normal"}'></px-chart-controls>
+        <px-chart-yaxis id="firstAxis" offset="0"></px-chart-yaxis>
+      </px-chart>
+    </px-card>
+  </template>
+</dom-module>
+<script>
+
+  Polymer({
+    is: 'time-series-card',
+    properties: {
+      config: {
+          type: Object
+      }
+    },
+    init: function(){
+      this.drawData();
+    },
+    drawData: function() {
+      var self = this;
+      /**
+       * use the card's getData API method to fetch data, then pass that data into our time series widget
+       * e.g. this.getData('http://predix-time-series-service').then(function(predixTimeSeriesData) {
+       * In practice, this url will probably come through your context object.
+       *
+       * you can also use the px data transformer to convert from Predix TimeSeries data format to the expected timeseries data format
+       * e.g.
+       *
+       * var timeSeriesChartData = new px.timeseries.dataTransformer().transform(predixTimeSeriesData.tags);
+       *
+       * or with option
+       *
+       * var timeSeriesDataTransformer = new px.timeseries.dataTransformer({
+       *    //function to customize the series name return by data transformer
+       *    getSeriesName: function (tagname, groups) {
+       *             return tagname + "_timeseries_group_name";
+       *         }
+       * });
+       *
+       * var timeSeriesChartData = timeSeriesDataTransformer.transform(predixTimeSeriesData.tags);
+       *
+       * sample time series data return from time series service
+       */
+
+      // var pxTimeSeriesDataTransformer = new px.timeseries.dataTransformer();
+
+      /**
+       * Data end point url can be passed from context property, therefore time seires card can display data data base on context object
+       * that is passed into time series card.
+       * */
+       if (this.context.urls && this.context.urls['R001-Startup']) {
+         px.dealer.httpRequest({
+        url: '/api/v1/datapoints',
+        method: 'POST',
+        data: this.context.urls['R001-Startup']
+        }).then(function (data) {
+          var firstSeries = {
+              id: 'R001-Startup',
+              axisId: 'firstAxis',  // possibly add more yAxes here?
+              data: data.tags[0].results[0].values,
+              name: 'R001-Startup',              
+              upperThreshold: "60.3",
+              lowerThreshold: "30.5"
+          };
+          // var firstSeries = pxTimeSeriesDataTransformer.transform(data.tags)[0];
+          // firstSeries.id = firstSeries.name;
+          // firstSeries.axisId = 'anotherAxis';
+          self.$.tsChart.addSeries(firstSeries);
+         });
+       }
+
+      if (this.context.urls && this.context.urls['R002-Thread']) {
+        px.dealer.httpRequest({
+        url: '/api/v1/datapoints',
+        method: 'POST',
+        data: this.context.urls['R002-Thread']
+        }).then(function (data) {
+          var secondSeries = {
+              id: 'R002-Thread',
+              axisId: 'firstAxis',  // possibly add more yAxes here?
+              data: data.tags[0].results[0].values,
+              name: 'R002-Thread'
+          };
+          // var secondSeries = pxTimeSeriesDataTransformer.transform(data.tags)[0];
+          // secondSeries.id = secondSeries.name;
+          // secondSeries.axisId = "firstAxis";
+          // secondSeries.upperThreshold = "30.5";
+          // secondSeries.lowerThreshold = "6.25";
+          self.$.tsChart.addSeries(secondSeries);
+        });
+      }
+
+      if (this.context.urls && this.context.urls['R006-Continuous-Manual-Reject']) {
+         px.dealer.httpRequest({
+        url: '/api/v1/datapoints',
+        method: 'POST',
+        data: this.context.urls['R006-Continuous-Manual-Reject']
+        }).then(function (data) {
+          var thirdSeries = {
+              id: 'R006-Continuous-Manual-Reject',
+              axisId: 'firstAxis',  // possibly add more yAxes here?
+              data: data.tags[0].results[0].values,
+              name: 'R006-Continuous-Manual-Reject'
+          };
+          // var thirdSeries = pxTimeSeriesDataTransformer.transform(data.tags)[0];
+          // thirdSeries.id = thirdSeries.name;
+          // thirdSeries.axisId = 'anotherAxis';
+          self.$.tsChart.addSeries(thirdSeries);
+         });
+       }
+
+       if (this.context.urls && this.context.urls['R008-VISEEL-CC2-Blu-Registration']) {
+         px.dealer.httpRequest({
+        url: '/api/v1/datapoints',
+        method: 'POST',
+        data: this.context.urls['R008-VISEEL-CC2-Blu-Registration']
+        }).then(function (data) {
+          var fourthSeries = {
+              id: 'R008-VISEEL-CC2-Blu-Registration',
+              axisId: 'firstAxis',  // possibly add more yAxes here?
+              data: data.tags[0].results[0].values,
+              name: 'R008-VISEEL-CC2-Blu-Registration'
+          };
+          // var fourthSeries = pxTimeSeriesDataTransformer.transform(data.tags)[0];
+          // fourthSeries.id = fourthSeries.name;
+          // fourthSeries.axisId = 'anotherAxis';
+          self.$.tsChart.addSeries(fourthSeries);
+         });
+       }
+
+       if (this.context.urls && this.context.urls['R033-VISBE1-BE-Ribbon-Position-DS']) {
+         px.dealer.httpRequest({
+        url: '/api/v1/datapoints',
+        method: 'POST',
+        data: this.context.urls['R033-VISBE1-BE-Ribbon-Position-DS']
+        }).then(function (data) {
+          var fifthSeries = {
+              id: 'R033-VISBE1-BE-Ribbon-Position-DS',
+              axisId: 'firstAxis',  // possibly add more yAxes here?
+              data: data.tags[0].results[0].values,
+              name: 'R033-VISBE1-BE-Ribbon-Position-DS'
+          };
+          // var fifthSeries = pxTimeSeriesDataTransformer.transform(data.tags)[0];
+          // fifthSeries.id = fifthSeries.name;
+          // fifthSeries.axisId = 'anotherAxis';
+          self.$.tsChart.addSeries(fifthSeries);
+         });
+       }
+
+      /**
+       * on card initialization converts card config to chart widget's chartState property
+       */
+      if (this.config){
+        this.$.tsChart.set('chartState', {chartZoom: self.config, srcElement: {}});
+      }
+    },
+
+    contextChanged: function(){
+      this.drawData();
+    },
+
+    saveBtnClicked: function(){
+      /**
+      * retrieve widget state from chart widget and assign it to card's config property
+      * then execute save method which will turn all card's properties to card attribute object for saving back to view service
+      */
+      this.config = this.$.tsChart.chartState.chartZoom;
+      this.save();
+    },
+
+    behaviors: [px.card]
+  });
+</script>

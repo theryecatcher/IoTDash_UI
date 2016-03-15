@@ -2,22 +2,22 @@
     {
         "uri": "child",
         "classification": "child",
-        "description": "Child Asset",
-        "assetId": "Child Asset",
+        "description": "Line 1",
+        "assetId": "Line 1",
         "parent": null
     },
     {
         "uri": "child2",
         "classification": "child",
-        "description": "Child Asset 2",
-        "assetId": "Child Asset 2",
+        "description": "Line 2",
+        "assetId": "Line 2",
         "parent": null
     },
     {
         "uri": "child3",
         "classification": "child",
-        "description": "Child Asset 3",
-        "assetId": "Child Asset 3",
+        "description": "Line 3",
+        "assetId": "Line 3",
         "parent": null
     }
 ]
